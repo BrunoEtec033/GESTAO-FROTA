@@ -23,16 +23,18 @@ function createWindow() {
     : win.loadFile(path.join(__dirname, '../../dist/index.html'))
 }
 
-ipcMain.handle('auth:login', async (_e, usuario, senha) => {
+ipcMain.handle('auth:login', async (_e, login, senha) => {
   try {
+    console.log('[login tentativa]', login, senha)
     const [rows] = await db.query(
-      'SELECT id, nome, cargo FROM usuarios WHERE usuario = ? AND senha = ? LIMIT 1',
-      [usuario, senha]
+      'SELECT id, nome, nivel_acesso FROM user WHERE login = ? AND senha = ? AND ativo = 1 LIMIT 1',
+      [login, senha]
     )
+    console.log('[login resultado]', rows)
     if (rows.length === 0) return { ok: false, erro: 'Usuário ou senha inválidos.' }
     return { ok: true, usuario: rows[0] }
   } catch (err) {
-    console.error('[auth:login]', err)
+    console.error('[auth:login erro]', err.message)
     return { ok: false, erro: 'Erro interno. Tente novamente.' }
   }
 })
