@@ -1,0 +1,115 @@
+.pagina {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: 100vh;
+}
+
+.esquerda {
+  position: relative;
+  overflow: hidden;
+  background: #060810;
+}
+
+.esquerda svg {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+}
+
+.direita {
+  background: #0d0d12;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 48px 44px;
+  border-left: 1px solid #1a1a2e;
+}
+
+.tag {
+  font-family: monospace;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #ff6a00;
+  margin-bottom: 8px;
+}
+
+.titulo {
+  font-size: 26px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 1px;
+  margin-bottom: 32px;
+}
+
+.titulo span {
+  color: #ff6a00;
+}
+
+.label {
+  font-family: monospace;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #444;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.input {
+  width: 100%;
+  padding: 11px 14px;
+  background: #0a0a12;
+  border: 1px solid #1a1a2e;
+  color: #cccccc;
+  font-size: 14px;
+  border-radius: 4px;
+  margin-bottom: 14px;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #ff6a00;
+}
+
+.input::placeholder {
+  color: #333;
+}
+
+.botao {
+  width: 100%;
+  padding: 13px;
+  background: #ff6a00;
+  color: #000;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 6px;
+  transition: background 0.2s;
+}
+
+.botao:hover {
+  background: #e05e00;
+}
+
+.botao:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.erro {
+  padding: 10px 14px;
+  margin-bottom: 14px;
+  font-size: 12px;
+  font-family: monospace;
+  background: #1a0a0a;
+  border: 1px solid #3a1a1a;
+  color: #ff4444;
+  border-radius: 4px;
+}
