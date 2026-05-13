@@ -1,0 +1,103 @@
+/* Container principal: sidebar + conteúdo lado a lado */
+.app {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  height: 100vh;
+  background: #111;
+}
+
+/* Sidebar esquerda */
+.sidebar {
+  background: #1a1a1a;
+  border-right: 1px solid #2a2a2a;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Nome do sistema no topo da sidebar */
+.logo {
+  padding: 24px 20px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.logo span {
+  color: #ff6a00;
+}
+
+/* Menu de navegação */
+.nav {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 12px 0;
+}
+
+/* Cada item do menu */
+.navItem {
+  display: flex;
+  align-items: center;
+  padding: 11px 20px;
+  font-size: 13px;
+  color: #666;
+  background: none;
+  border: none;
+  border-left: 3px solid transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+
+.navItem:hover {
+  color: #aaa;
+  background: #ffffff08;
+}
+
+/* Item selecionado fica laranja */
+.ativo {
+  color: #ff6a00;
+  border-left-color: #ff6a00;
+  background: #ff6a0010;
+}
+
+/* Usuário no rodapé da sidebar */
+.usuario {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 20px;
+  border-top: 1px solid #2a2a2a;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #ff6a00;
+  color: #000;
+  font-weight: 700;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.nomeUsuario {
+  margin: 0;
+  font-size: 12px;
+  color: #ccc;
+}
+
+.cargoUsuario {
+  font-size: 11px;
+  color: #555;
+}
+
+/* Área de conteúdo da direita */
+.conteudo {
+  padding: 32px;
+  overflow-y: auto;
+}
