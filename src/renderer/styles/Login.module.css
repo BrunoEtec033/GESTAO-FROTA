@@ -1,0 +1,83 @@
+.pagina {
+  background: #111111;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card {
+  background: #1a1a1a;
+  padding: 48px 40px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 400px;
+  border: 1px solid #2a2a2a;
+}
+
+.titulo {
+  color: #ffffff;
+  font-size: 22px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.subtitulo {
+  color: #555555;
+  font-size: 13px;
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.label {
+  display: block;
+  color: #888888;
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+
+.input {
+  width: 100%;
+  padding: 12px 14px;
+  background: #111111;
+  border: 1px solid #2a2a2a;
+  border-radius: 6px;
+  color: #ffffff;
+  font-size: 14px;
+  margin-bottom: 16px;
+  box-sizing: border-box;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #ff6a00;
+}
+
+.input::placeholder {
+  color: #555555;
+}
+
+.botao {
+  width: 100%;
+  padding: 13px;
+  background: #ff6a00;
+  color: #000000;
+  font-size: 14px;
+  font-weight: 700;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.botao:hover {
+  background: #e05e00;
+}
+
+.erro {
+  color: #ff4444;
+  font-size: 13px;
+  text-align: center;
+  margin-bottom: 16px;
+}
