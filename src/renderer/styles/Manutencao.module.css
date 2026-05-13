@@ -1,3 +1,4 @@
+/* Título da página */
 .titulo {
   color: #fff;
   font-size: 20px;
@@ -5,6 +6,41 @@
   margin: 0 0 20px;
 }
 
+/* Container das abas */
+.abas {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+/* Aba normal */
+.aba {
+  padding: 8px 20px;
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  border-radius: 6px;
+  color: #666;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.aba:hover {
+  color: #aaa;
+}
+
+/* Aba selecionada */
+.abaAtiva {
+  padding: 8px 20px;
+  background: #2a1800;
+  border: 1px solid #ff6a00;
+  border-radius: 6px;
+  color: #ff6a00;
+  font-size: 13px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* Campo de busca */
 .busca {
   width: 100%;
   max-width: 360px;
@@ -23,10 +59,7 @@
   border-color: #ff6a00;
 }
 
-.busca::placeholder {
-  color: #555;
-}
-
+/* Tabela */
 .tabela {
   width: 100%;
   border-collapse: collapse;
@@ -53,34 +86,15 @@
   background: #1a1a1a;
 }
 
+/* Mensagem vazia */
 .vazio {
   text-align: center;
   color: #444;
   padding: 40px !important;
 }
 
-/* Badge disponível - verde */
-.badgeDisponivel {
-  background: #0e2a0e;
-  color: #3a8a3a;
-  font-size: 11px;
-  padding: 3px 8px;
-  border-radius: 4px;
-  font-weight: 600;
-}
-
-/* Badge em viagem - laranja */
-.badgeViagem {
-  background: #2a1800;
-  color: #ff6a00;
-  font-size: 11px;
-  padding: 3px 8px;
-  border-radius: 4px;
-  font-weight: 600;
-}
-
-/* Badge em manutenção - vermelho */
-.badgeManutencao {
+/* Badges de tipo de manutenção */
+.badgeCorretiva {
   background: #2a0e0e;
   color: #aa3333;
   font-size: 11px;
@@ -89,6 +103,44 @@
   font-weight: 600;
 }
 
+.badgePreventiva {
+  background: #0e1a2a;
+  color: #3a6aaa;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+/* Badges de status da preventiva */
+.badgeConcluida {
+  background: #0e2a0e;
+  color: #3a8a3a;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.badgePendente {
+  background: #2a1800;
+  color: #ff6a00;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.badgeAtrasada {
+  background: #2a0e0e;
+  color: #aa3333;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+/* Paginação */
 .paginacao {
   display: flex;
   align-items: center;

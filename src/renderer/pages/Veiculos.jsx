@@ -1,24 +1,27 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import styles from '../styles/Veiculos.module.css'
 
 export default function Veiculos() {
-  // Lista de veículos - depois vai vir do banco
   const [veiculos, setVeiculos] = useState([])
+  const [busca, setBusca]       = useState('')
+  const [pagina, setPagina]     = useState(1)
 
-  // Busca digitada pelo usuário
-  const [busca, setBusca] = useState('')
+  // Carrega os veículos do banco quando a tela abre
+  useEffect(() => {
+    async function carregar() {
+      const resultado = await window.electronAPI.listarVeiculos()
+      if (resultado.ok) setVeiculos(resultado.dados)
+    }
+    carregar()
+  }, [])
 
-  // Página atual da tabela
-  const [pagina, setPagina] = useState(1)
   const porPagina = 15
 
-  // Filtra os veículos pelo que foi digitado na busca
   const filtrados = veiculos.filter(v =>
     v.placa.toLowerCase().includes(busca.toLowerCase()) ||
     v.modelo.toLowerCase().includes(busca.toLowerCase())
   )
 
-  // Pega só os veículos da página atual
   const totalPaginas = Math.ceil(filtrados.length / porPagina)
   const inicio = (pagina - 1) * porPagina
   const visiveis = filtrados.slice(inicio, inicio + porPagina)
@@ -27,7 +30,6 @@ export default function Veiculos() {
     <div>
       <h1 className={styles.titulo}>Veículos</h1>
 
-      {/* Barra de busca */}
       <input
         className={styles.busca}
         type="text"
@@ -36,7 +38,6 @@ export default function Veiculos() {
         onChange={e => { setBusca(e.target.value); setPagina(1) }}
       />
 
-      {/* Tabela de veículos */}
       <table className={styles.tabela}>
         <thead>
           <tr>
@@ -59,14 +60,21 @@ export default function Veiculos() {
                 <td>{v.modelo}</td>
                 <td>{v.marca}</td>
                 <td>{v.ano}</td>
-                <td>{v.status_veiculo}</td>
+                <td>
+                  <span className={
+                    v.status_veiculo === 'Disponível'   ? styles.badgeDisponivel :
+                    v.status_veiculo === 'Em viagem'    ? styles.badgeViagem     :
+                    styles.badgeManutencao
+                  }>
+                    {v.status_veiculo}
+                  </span>
+                </td>
               </tr>
             ))
           )}
         </tbody>
       </table>
 
-      {/* Paginação */}
       {totalPaginas > 1 && (
         <div className={styles.paginacao}>
           <button onClick={() => setPagina(p => p - 1)} disabled={pagina === 1}>

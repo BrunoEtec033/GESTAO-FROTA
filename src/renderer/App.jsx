@@ -3,6 +3,11 @@ import Login      from './pages/Login'
 import Layout     from './components/Layout'
 import Dashboard  from './pages/Dashboard'
 import Veiculos   from './pages/Veiculos'
+import Motoristas from './pages/Motoristas'
+import Viagens from './pages/Viagens'
+import Manutencao from './pages/Manutencao'
+import Abastecimento from './pages/Abastecimento'
+import Multas from './pages/Multas'
 
 export default function App() {
   const [pagina, setPagina]   = useState('login')
@@ -22,7 +27,13 @@ export default function App() {
   function renderPagina() {
     if (pagina === 'dashboard') return <Dashboard usuario={usuario} />
     if (pagina === 'veiculos')  return <Veiculos />
+    if (pagina === 'motoristas') return <Motoristas />
+    if (pagina === 'viagens') return <Viagens />
+    if (pagina === 'manutencao') return <Manutencao />
+    if (pagina === 'abastecimento') return <Abastecimento />
+    if (pagina === 'multas') return <Multas />
     return <p style={{ color: '#555' }}>Em construção...</p>
+    
   }
 
   return (

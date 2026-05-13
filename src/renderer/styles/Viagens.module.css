@@ -1,3 +1,4 @@
+/* Título da página */
 .titulo {
   color: #fff;
   font-size: 20px;
@@ -5,6 +6,7 @@
   margin: 0 0 20px;
 }
 
+/* Campo de busca */
 .busca {
   width: 100%;
   max-width: 360px;
@@ -23,16 +25,14 @@
   border-color: #ff6a00;
 }
 
-.busca::placeholder {
-  color: #555;
-}
-
+/* Tabela */
 .tabela {
   width: 100%;
   border-collapse: collapse;
   font-size: 13px;
 }
 
+/* Cabeçalho */
 .tabela th {
   text-align: left;
   padding: 10px 14px;
@@ -43,34 +43,27 @@
   border-bottom: 1px solid #2a2a2a;
 }
 
+/* Células */
 .tabela td {
   padding: 12px 14px;
   color: #ccc;
   border-bottom: 1px solid #1e1e1e;
 }
 
+/* Destaque ao passar o mouse */
 .tabela tr:hover td {
   background: #1a1a1a;
 }
 
+/* Mensagem quando não tem dados */
 .vazio {
   text-align: center;
   color: #444;
   padding: 40px !important;
 }
 
-/* Badge disponível - verde */
-.badgeDisponivel {
-  background: #0e2a0e;
-  color: #3a8a3a;
-  font-size: 11px;
-  padding: 3px 8px;
-  border-radius: 4px;
-  font-weight: 600;
-}
-
-/* Badge em viagem - laranja */
-.badgeViagem {
+/* Badge de viagem em andamento - laranja */
+.badgeAndamento {
   background: #2a1800;
   color: #ff6a00;
   font-size: 11px;
@@ -79,16 +72,17 @@
   font-weight: 600;
 }
 
-/* Badge em manutenção - vermelho */
-.badgeManutencao {
-  background: #2a0e0e;
-  color: #aa3333;
+/* Badge de viagem concluída - verde */
+.badgeConcluida {
+  background: #0e2a0e;
+  color: #3a8a3a;
   font-size: 11px;
   padding: 3px 8px;
   border-radius: 4px;
   font-weight: 600;
 }
 
+/* Paginação */
 .paginacao {
   display: flex;
   align-items: center;
