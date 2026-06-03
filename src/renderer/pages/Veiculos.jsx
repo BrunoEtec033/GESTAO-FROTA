@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react'
 import styles from '../styles/Veiculos.module.css'
 
-export default function Veiculos() {
+export default function Veiculos({ usuario }) {
   const [veiculos, setVeiculos] = useState([])
   const [busca, setBusca]       = useState('')
   const [pagina, setPagina]     = useState(1)
 
-  // Carrega os veículos do banco quando a tela abre
   useEffect(() => {
     async function carregar() {
-      const resultado = await window.electronAPI.listarVeiculos()
+      // Passa o id_empresa pra filtrar só os veículos da empresa
+      const resultado = await window.electronAPI.listarVeiculos(usuario.id_empresa)
       if (resultado.ok) setVeiculos(resultado.dados)
     }
     carregar()

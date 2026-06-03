@@ -24,17 +24,16 @@ export default function App() {
   }
 
   // Decide qual componente renderizar baseado na página selecionada
-  function renderPagina() {
-    if (pagina === 'dashboard') return <Dashboard usuario={usuario} />
-    if (pagina === 'veiculos')  return <Veiculos />
-    if (pagina === 'motoristas') return <Motoristas />
-    if (pagina === 'viagens') return <Viagens />
-    if (pagina === 'manutencao') return <Manutencao />
-    if (pagina === 'abastecimento') return <Abastecimento />
-    if (pagina === 'multas') return <Multas />
+ function renderPagina() {
+    if (pagina === 'dashboard')     return <Dashboard     usuario={usuario} />
+    if (pagina === 'veiculos')      return <Veiculos      usuario={usuario} />
+    if (pagina === 'motoristas')    return <Motoristas    usuario={usuario} />
+    if (pagina === 'viagens')       return <Viagens       usuario={usuario} />
+    if (pagina === 'manutencao')    return <Manutencao    usuario={usuario} />
+    if (pagina === 'abastecimento') return <Abastecimento usuario={usuario} />
+    if (pagina === 'multas')        return <Multas        usuario={usuario} />
     return <p style={{ color: '#555' }}>Em construção...</p>
-    
-  }
+}
 
   return (
     <Layout usuario={usuario} paginaAtual={pagina} onNavegar={setPagina}>

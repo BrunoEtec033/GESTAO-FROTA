@@ -1,6 +1,18 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .titulo {
   color: #fff;
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
   margin: 0 0 4px;
 }
@@ -8,35 +20,173 @@
 .subtitulo {
   color: #555;
   font-size: 13px;
-  margin: 0 0 28px;
+  margin: 0;
 }
 
-/* Grid com os 4 cards de resumo */
+.dataBadge {
+  font-size: 12px;
+  color: #666;
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  padding: 8px 16px;
+  border-radius: 6px;
+  text-transform: capitalize;
+}
+
+/* Cards */
 .cards {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 12px;
 }
 
 .card {
   background: #1a1a1a;
   border: 1px solid #2a2a2a;
-  border-radius: 8px;
-  padding: 20px;
+  border-radius: 10px;
+  padding: 18px 20px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
+  transition: border-color 0.2s, transform 0.15s;
+}
+
+.card:hover {
+  border-color: #ff6a00;
+  transform: translateY(-2px);
+}
+
+.cardTopo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
 }
 
 .cardLabel {
-  font-size: 11px;
+  font-size: 10px;
   color: #555;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
+}
+
+.cardIcone {
+  font-size: 18px;
 }
 
 .cardValor {
-  font-size: 32px;
+  font-size: 30px;
   font-weight: 700;
   color: #fff;
+  line-height: 1;
+}
+
+.cardSub {
+  font-size: 11px;
+  color: #444;
+  margin-top: 4px;
+}
+
+/* Gráficos */
+.graficos {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 12px;
+}
+
+.graficoCard {
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.graficoTitulo {
+  font-size: 11px;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin: 0 0 16px;
+}
+
+.legenda {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #2a2a2a;
+}
+
+.legendaItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #777;
+}
+
+.legendaItem strong {
+  margin-left: auto;
+  color: #fff;
+  font-size: 15px;
+}
+
+.legendaDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Tabela */
+.tabelaCard {
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.tabela {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin-top: 8px;
+}
+
+.tabela th {
+  text-align: left;
+  padding: 10px 14px;
+  color: #555;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.tabela td {
+  padding: 12px 14px;
+  color: #ccc;
+  border-bottom: 1px solid #1e1e1e;
+}
+
+.tabela tr:hover td {
+  background: #222;
+}
+
+.badgeAndamento {
+  background: #2a1800;
+  color: #ff6a00;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.vazio {
+  color: #444;
+  font-size: 13px;
+  text-align: center;
+  padding: 32px 0;
 }

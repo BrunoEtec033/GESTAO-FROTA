@@ -1,27 +1,33 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import styles from '../styles/Motoristas.module.css'
 
-export default function Motoristas() {
-  // Lista de motoristas - depois vai vir do banco
+// Função que formata qualquer data do banco pra dd/mm/aaaa
+function formatarData(data) {
+  if (!data) return '—'
+  return new Date(data).toLocaleDateString('pt-BR')
+}
+
+export default function Motoristas({ usuario }) {
   const [motoristas, setMotoristas] = useState([])
+  const [busca, setBusca]           = useState('')
+  const [pagina, setPagina]         = useState(1)
 
-  // Texto digitado na busca
-  const [busca, setBusca] = useState('')
+  useEffect(() => {
+    async function carregar() {
+      const resultado = await window.electronAPI.listarMotoristas(usuario.id_empresa)
+      if (resultado.ok) setMotoristas(resultado.dados)
+    }
+    carregar()
+  }, [])
 
-  // Página atual
-  const [pagina, setPagina] = useState(1)
   const porPagina = 15
 
-  // Filtra pelo nome ou CNH digitado
   const filtrados = motoristas.filter(m =>
     m.nome.toLowerCase().includes(busca.toLowerCase()) ||
     m.cnh.toLowerCase().includes(busca.toLowerCase())
   )
 
-  // Calcula quantas páginas existem
   const totalPaginas = Math.ceil(filtrados.length / porPagina)
-
-  // Pega só os motoristas da página atual
   const inicio = (pagina - 1) * porPagina
   const visiveis = filtrados.slice(inicio, inicio + porPagina)
 
@@ -29,7 +35,6 @@ export default function Motoristas() {
     <div>
       <h1 className={styles.titulo}>Motoristas</h1>
 
-      {/* Campo de busca */}
       <input
         className={styles.busca}
         type="text"
@@ -38,7 +43,6 @@ export default function Motoristas() {
         onChange={e => { setBusca(e.target.value); setPagina(1) }}
       />
 
-      {/* Tabela de motoristas */}
       <table className={styles.tabela}>
         <thead>
           <tr>
@@ -61,16 +65,24 @@ export default function Motoristas() {
                 <td>{m.nome}</td>
                 <td>{m.cnh}</td>
                 <td>{m.categoria_cnh}</td>
-                <td>{m.vencimento_cnh}</td>
+                {/* Formata a data pra não quebrar o React */}
+                <td>{formatarData(m.vencimento_cnh)}</td>
                 <td>{m.telefone || '—'}</td>
-                <td>{m.status_motorista}</td>
+                <td>
+                  <span className={
+                    m.status_motorista === 'Ativo'     ? styles.badgeAtivo  :
+                    m.status_motorista === 'De férias' ? styles.badgeFerias :
+                    styles.badgeAfastado
+                  }>
+                    {m.status_motorista}
+                  </span>
+                </td>
               </tr>
             ))
           )}
         </tbody>
       </table>
 
-      {/* Paginação — só aparece se tiver mais de uma página */}
       {totalPaginas > 1 && (
         <div className={styles.paginacao}>
           <button onClick={() => setPagina(p => p - 1)} disabled={pagina === 1}>

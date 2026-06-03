@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "dotenv": "^16.4.0",
-    "mysql2": "^3.9.0"
+    "mysql2": "^3.9.0",
+    "recharts": "^3.8.1"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.0",
@@ -25,7 +26,12 @@
   "build": {
     "appId": "com.fleetos.app",
     "productName": "FleetOS",
-    "directories": { "output": "release" },
-    "files": ["dist/**/*", "src/main/**/*"]
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "src/main/**/*"
+    ]
   }
 }

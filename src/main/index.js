@@ -27,7 +27,7 @@ function createWindow() {
 ipcMain.handle('auth:login', async (_e, login, senha) => {
   try {
     const [rows] = await db.query(
-      'SELECT id, nome, nivel_acesso FROM user WHERE login = ? AND senha = ? AND ativo = 1 LIMIT 1',
+      'SELECT id, nome, nivel_acesso, id_empresa FROM `user` WHERE login = ? AND senha = ? AND ativo = 1 LIMIT 1',
       [login, senha]
     )
     if (rows.length === 0) return { ok: false, erro: 'Usuário ou senha inválidos.' }
@@ -39,10 +39,11 @@ ipcMain.handle('auth:login', async (_e, login, senha) => {
 })
 
 // ── Veículos ───────────────────────────────────────────────
-ipcMain.handle('veiculos:listar', async () => {
+ipcMain.handle('veiculos:listar', async (_e, id_empresa) => {
   try {
     const [rows] = await db.query(
-      'SELECT * FROM controle_veiculo WHERE ativo = 1 ORDER BY placa'
+      'SELECT * FROM controle_veiculo WHERE ativo = 1 AND id_empresa = ? ORDER BY placa',
+      [id_empresa]
     )
     return { ok: true, dados: rows }
   } catch (err) {
@@ -52,10 +53,11 @@ ipcMain.handle('veiculos:listar', async () => {
 })
 
 // ── Motoristas ─────────────────────────────────────────────
-ipcMain.handle('motoristas:listar', async () => {
+ipcMain.handle('motoristas:listar', async (_e, id_empresa) => {
   try {
     const [rows] = await db.query(
-      'SELECT * FROM motorista WHERE ativo = 1 ORDER BY nome'
+      'SELECT * FROM motorista WHERE ativo = 1 AND id_empresa = ? ORDER BY nome',
+      [id_empresa]
     )
     return { ok: true, dados: rows }
   } catch (err) {
@@ -65,10 +67,11 @@ ipcMain.handle('motoristas:listar', async () => {
 })
 
 // ── Viagens ────────────────────────────────────────────────
-ipcMain.handle('viagens:listar', async () => {
+ipcMain.handle('viagens:listar', async (_e, id_empresa) => {
   try {
     const [rows] = await db.query(
-      'SELECT * FROM controle_viagem ORDER BY data_saida DESC'
+      'SELECT * FROM controle_viagem WHERE id_empresa = ? ORDER BY data_saida DESC',
+      [id_empresa]
     )
     return { ok: true, dados: rows }
   } catch (err) {
@@ -78,10 +81,11 @@ ipcMain.handle('viagens:listar', async () => {
 })
 
 // ── Manutenção realizadas ──────────────────────────────────
-ipcMain.handle('manutencao:listar', async () => {
+ipcMain.handle('manutencao:listar', async (_e, id_empresa) => {
   try {
     const [rows] = await db.query(
-      'SELECT * FROM controle_manutencao ORDER BY data_manutencao DESC'
+      'SELECT * FROM controle_manutencao WHERE id_empresa = ? ORDER BY data_manutencao DESC',
+      [id_empresa]
     )
     return { ok: true, dados: rows }
   } catch (err) {
@@ -91,10 +95,11 @@ ipcMain.handle('manutencao:listar', async () => {
 })
 
 // ── Manutenção preventivas ─────────────────────────────────
-ipcMain.handle('preventivas:listar', async () => {
+ipcMain.handle('preventivas:listar', async (_e, id_empresa) => {
   try {
     const [rows] = await db.query(
-      'SELECT * FROM manutencao_preventiva ORDER BY data_prevista ASC'
+      'SELECT * FROM manutencao_preventiva WHERE id_empresa = ? ORDER BY data_prevista ASC',
+      [id_empresa]
     )
     return { ok: true, dados: rows }
   } catch (err) {
@@ -104,10 +109,11 @@ ipcMain.handle('preventivas:listar', async () => {
 })
 
 // ── Abastecimento ──────────────────────────────────────────
-ipcMain.handle('abastecimento:listar', async () => {
+ipcMain.handle('abastecimento:listar', async (_e, id_empresa) => {
   try {
     const [rows] = await db.query(
-      'SELECT * FROM abastecimento ORDER BY data_abastecimento DESC'
+      'SELECT * FROM abastecimento WHERE id_empresa = ? ORDER BY data_abastecimento DESC',
+      [id_empresa]
     )
     return { ok: true, dados: rows }
   } catch (err) {
@@ -117,10 +123,11 @@ ipcMain.handle('abastecimento:listar', async () => {
 })
 
 // ── Multas ─────────────────────────────────────────────────
-ipcMain.handle('multas:listar', async () => {
+ipcMain.handle('multas:listar', async (_e, id_empresa) => {
   try {
     const [rows] = await db.query(
-      'SELECT * FROM controle_multas ORDER BY data_infracao DESC'
+      'SELECT * FROM controle_multas WHERE id_empresa = ? ORDER BY data_infracao DESC',
+      [id_empresa]
     )
     return { ok: true, dados: rows }
   } catch (err) {
