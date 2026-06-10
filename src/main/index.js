@@ -23,6 +23,18 @@ function createWindow() {
     : win.loadFile(path.join(__dirname, '../../dist/index.html'))
 }
 
+// ── Helper: wrapper com tratamento de erro padrão ──────────
+// FIX: evita repetir try/catch em todo handler
+async function querySegura(canal, sql, params = []) {
+  try {
+    const [rows] = await db.query(sql, params)
+    return { ok: true, dados: rows }
+  } catch (err) {
+    console.error(`[${canal}]`, err.message)
+    return { ok: false, erro: `Erro ao executar ${canal}.` }
+  }
+}
+
 // ── Login ──────────────────────────────────────────────────
 ipcMain.handle('auth:login', async (_e, login, senha) => {
   try {
@@ -40,100 +52,94 @@ ipcMain.handle('auth:login', async (_e, login, senha) => {
 
 // ── Veículos ───────────────────────────────────────────────
 ipcMain.handle('veiculos:listar', async (_e, id_empresa) => {
-  try {
-    const [rows] = await db.query(
+  // FIX: se id_empresa for null/undefined, busca tudo (compatível com schema sem id_empresa)
+  if (id_empresa) {
+    return querySegura('veiculos:listar',
       'SELECT * FROM controle_veiculo WHERE ativo = 1 AND id_empresa = ? ORDER BY placa',
       [id_empresa]
     )
-    return { ok: true, dados: rows }
-  } catch (err) {
-    console.error('[veiculos:listar]', err.message)
-    return { ok: false, erro: 'Erro ao buscar veículos.' }
   }
+  return querySegura('veiculos:listar',
+    'SELECT * FROM controle_veiculo WHERE ativo = 1 ORDER BY placa'
+  )
 })
 
 // ── Motoristas ─────────────────────────────────────────────
 ipcMain.handle('motoristas:listar', async (_e, id_empresa) => {
-  try {
-    const [rows] = await db.query(
+  if (id_empresa) {
+    return querySegura('motoristas:listar',
       'SELECT * FROM motorista WHERE ativo = 1 AND id_empresa = ? ORDER BY nome',
       [id_empresa]
     )
-    return { ok: true, dados: rows }
-  } catch (err) {
-    console.error('[motoristas:listar]', err.message)
-    return { ok: false, erro: 'Erro ao buscar motoristas.' }
   }
+  return querySegura('motoristas:listar',
+    'SELECT * FROM motorista WHERE ativo = 1 ORDER BY nome'
+  )
 })
 
 // ── Viagens ────────────────────────────────────────────────
 ipcMain.handle('viagens:listar', async (_e, id_empresa) => {
-  try {
-    const [rows] = await db.query(
+  if (id_empresa) {
+    return querySegura('viagens:listar',
       'SELECT * FROM controle_viagem WHERE id_empresa = ? ORDER BY data_saida DESC',
       [id_empresa]
     )
-    return { ok: true, dados: rows }
-  } catch (err) {
-    console.error('[viagens:listar]', err.message)
-    return { ok: false, erro: 'Erro ao buscar viagens.' }
   }
+  return querySegura('viagens:listar',
+    'SELECT * FROM controle_viagem ORDER BY data_saida DESC'
+  )
 })
 
 // ── Manutenção realizadas ──────────────────────────────────
 ipcMain.handle('manutencao:listar', async (_e, id_empresa) => {
-  try {
-    const [rows] = await db.query(
+  if (id_empresa) {
+    return querySegura('manutencao:listar',
       'SELECT * FROM controle_manutencao WHERE id_empresa = ? ORDER BY data_manutencao DESC',
       [id_empresa]
     )
-    return { ok: true, dados: rows }
-  } catch (err) {
-    console.error('[manutencao:listar]', err.message)
-    return { ok: false, erro: 'Erro ao buscar manutenções.' }
   }
+  return querySegura('manutencao:listar',
+    'SELECT * FROM controle_manutencao ORDER BY data_manutencao DESC'
+  )
 })
 
 // ── Manutenção preventivas ─────────────────────────────────
 ipcMain.handle('preventivas:listar', async (_e, id_empresa) => {
-  try {
-    const [rows] = await db.query(
+  if (id_empresa) {
+    return querySegura('preventivas:listar',
       'SELECT * FROM manutencao_preventiva WHERE id_empresa = ? ORDER BY data_prevista ASC',
       [id_empresa]
     )
-    return { ok: true, dados: rows }
-  } catch (err) {
-    console.error('[preventivas:listar]', err.message)
-    return { ok: false, erro: 'Erro ao buscar preventivas.' }
   }
+  return querySegura('preventivas:listar',
+    'SELECT * FROM manutencao_preventiva ORDER BY data_prevista ASC'
+  )
 })
 
 // ── Abastecimento ──────────────────────────────────────────
 ipcMain.handle('abastecimento:listar', async (_e, id_empresa) => {
-  try {
-    const [rows] = await db.query(
+  if (id_empresa) {
+    return querySegura('abastecimento:listar',
       'SELECT * FROM abastecimento WHERE id_empresa = ? ORDER BY data_abastecimento DESC',
       [id_empresa]
     )
-    return { ok: true, dados: rows }
-  } catch (err) {
-    console.error('[abastecimento:listar]', err.message)
-    return { ok: false, erro: 'Erro ao buscar abastecimentos.' }
   }
+  return querySegura('abastecimento:listar',
+    'SELECT * FROM abastecimento ORDER BY data_abastecimento DESC'
+  )
 })
 
 // ── Multas ─────────────────────────────────────────────────
 ipcMain.handle('multas:listar', async (_e, id_empresa) => {
-  try {
-    const [rows] = await db.query(
+  if (id_empresa) {
+    return querySegura('multas:listar',
       'SELECT * FROM controle_multas WHERE id_empresa = ? ORDER BY data_infracao DESC',
       [id_empresa]
     )
-    return { ok: true, dados: rows }
-  } catch (err) {
-    console.error('[multas:listar]', err.message)
-    return { ok: false, erro: 'Erro ao buscar multas.' }
   }
+  return querySegura('multas:listar',
+    'SELECT * FROM controle_multas ORDER BY data_infracao DESC'
+  )
 })
 
 // ── App lifecycle ──────────────────────────────────────────

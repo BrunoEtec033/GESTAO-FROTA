@@ -1,6 +1,24 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, memo } from 'react'
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
 import styles from '../styles/Dashboard.module.css'
+
+// ── Relógio isolado em componente próprio ──────────────────
+// Assim o setInterval de 1s só re-renderiza este componente,
+// sem afetar o Dashboard inteiro (e a pizza não re-anima todo segundo)
+const Relogio = memo(function Relogio() {
+  const [agora, setAgora] = useState(new Date())
+  useEffect(() => {
+    const id = setInterval(() => setAgora(new Date()), 1000)
+    return () => clearInterval(id)
+  }, [])
+  return (
+    <div className={styles.dataBadge}>
+      {agora.toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' })}
+      {' — '}
+      {agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+    </div>
+  )
+})
 
 export default function Dashboard({ usuario }) {
   const [veiculos,       setVeiculos]       = useState([])
@@ -8,16 +26,13 @@ export default function Dashboard({ usuario }) {
   const [abastecimentos, setAbastecimentos] = useState([])
   const [multas,         setMultas]         = useState([])
   const [motoristas,     setMotoristas]     = useState([])
-  const [agora,          setAgora]          = useState(new Date())
+  const [carregando,     setCarregando]     = useState(true)
+  const [erro,           setErro]           = useState(null)
 
-  // Atualiza o relógio a cada segundo
-  useEffect(() => {
-    const intervalo = setInterval(() => setAgora(new Date()), 1000)
-    return () => clearInterval(intervalo)
-  }, [])
-
-  useEffect(() => {
-    async function carregar() {
+  const carregar = useCallback(async () => {
+    setCarregando(true)
+    setErro(null)
+    try {
       const [rv, rvi, ra, rm, rmo] = await Promise.all([
         window.electronAPI.listarVeiculos(usuario.id_empresa),
         window.electronAPI.listarViagens(usuario.id_empresa),
@@ -30,18 +45,24 @@ export default function Dashboard({ usuario }) {
       if (ra.ok)  setAbastecimentos(ra.dados)
       if (rm.ok)  setMultas(rm.dados)
       if (rmo.ok) setMotoristas(rmo.dados)
-    }
-    carregar()
-  }, [])
 
-  // Pizza: status dos veículos
+      const erros = [rv, rvi, ra, rm, rmo].filter(r => !r.ok).map(r => r.erro)
+      if (erros.length > 0) setErro('Alguns dados não carregaram: ' + erros.join(', '))
+    } catch (e) {
+      setErro('Erro de conexão com o banco de dados. Verifique se o MySQL está rodando.')
+    } finally {
+      setCarregando(false)
+    }
+  }, [usuario.id_empresa])
+
+  useEffect(() => { carregar() }, [carregar])
+
   const statusVeiculos = [
     { name: 'Disponível',    value: veiculos.filter(v => v.status_veiculo === 'Disponível').length,    cor: '#3a8a3a' },
     { name: 'Em viagem',     value: veiculos.filter(v => v.status_veiculo === 'Em viagem').length,     cor: '#ff6a00' },
     { name: 'Em manutenção', value: veiculos.filter(v => v.status_veiculo === 'Em manutenção').length, cor: '#aa3333' },
   ]
 
-  // Barras: gasto de abastecimento por mês
   const gastosPorMes = abastecimentos.reduce((acc, a) => {
     const mes = new Date(a.data_abastecimento).toLocaleDateString('pt-BR', { month: 'short' })
     const existente = acc.find(x => x.mes === mes)
@@ -50,7 +71,6 @@ export default function Dashboard({ usuario }) {
     return acc
   }, [])
 
-  // Totais
   const totalVeiculos      = veiculos.length
   const viagensAndamento   = viagens.filter(v => !v.data_retorno).length
   const totalAbastecimento = abastecimentos.reduce((s, a) => s + Number(a.valor_total), 0)
@@ -60,20 +80,25 @@ export default function Dashboard({ usuario }) {
   return (
     <div className={styles.page}>
 
-      {/* Cabeçalho */}
       <div className={styles.header}>
         <div>
           <h1 className={styles.titulo}>Dashboard</h1>
           <p className={styles.subtitulo}>Visão geral da frota — {usuario.nome}</p>
         </div>
-        <div className={styles.dataBadge}>
-          {agora.toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' })}
-          {' — '}
-          {agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
-        </div>
+        {/* Relógio isolado — não afeta mais o resto do Dashboard */}
+        <Relogio />
       </div>
 
-      {/* Cards */}
+      {carregando && <p style={{ color: '#888', marginBottom: 16 }}>⏳ Carregando dados...</p>}
+      {erro && (
+        <div style={{ background: '#2a1010', border: '1px solid #aa3333', borderRadius: 8, padding: '10px 16px', marginBottom: 16, color: '#ff6666', fontSize: 13 }}>
+          ⚠️ {erro}
+          <button onClick={carregar} style={{ marginLeft: 12, padding: '2px 10px', background: '#333', border: '1px solid #555', borderRadius: 4, color: '#ccc', cursor: 'pointer', fontSize: 12 }}>
+            Tentar novamente
+          </button>
+        </div>
+      )}
+
       <div className={styles.cards}>
         <div className={styles.card}>
           <div className={styles.cardTopo}>
@@ -83,7 +108,6 @@ export default function Dashboard({ usuario }) {
           <strong className={styles.cardValor}>{totalVeiculos}</strong>
           <span className={styles.cardSub}>frota ativa</span>
         </div>
-
         <div className={styles.card}>
           <div className={styles.cardTopo}>
             <span className={styles.cardLabel}>Em viagem</span>
@@ -92,7 +116,6 @@ export default function Dashboard({ usuario }) {
           <strong className={styles.cardValor} style={{ color: '#ff6a00' }}>{viagensAndamento}</strong>
           <span className={styles.cardSub}>em andamento</span>
         </div>
-
         <div className={styles.card}>
           <div className={styles.cardTopo}>
             <span className={styles.cardLabel}>Motoristas ativos</span>
@@ -101,7 +124,6 @@ export default function Dashboard({ usuario }) {
           <strong className={styles.cardValor} style={{ color: '#4a8aff' }}>{motoristasAtivos}</strong>
           <span className={styles.cardSub}>disponíveis</span>
         </div>
-
         <div className={styles.card}>
           <div className={styles.cardTopo}>
             <span className={styles.cardLabel}>Abastecimento</span>
@@ -110,7 +132,6 @@ export default function Dashboard({ usuario }) {
           <strong className={styles.cardValor} style={{ color: '#3a8a3a' }}>R$ {totalAbastecimento.toFixed(0)}</strong>
           <span className={styles.cardSub}>total gasto</span>
         </div>
-
         <div className={styles.card}>
           <div className={styles.cardTopo}>
             <span className={styles.cardLabel}>Multas pendentes</span>
@@ -121,10 +142,7 @@ export default function Dashboard({ usuario }) {
         </div>
       </div>
 
-      {/* Gráficos */}
       <div className={styles.graficos}>
-
-        {/* Pizza */}
         <div className={styles.graficoCard}>
           <h2 className={styles.graficoTitulo}>Status da frota</h2>
           {totalVeiculos === 0 ? (
@@ -133,7 +151,14 @@ export default function Dashboard({ usuario }) {
             <>
               <ResponsiveContainer width="100%" height={180}>
                 <PieChart>
-                  <Pie data={statusVeiculos} cx="50%" cy="50%" innerRadius={50} outerRadius={80} paddingAngle={3} dataKey="value">
+                  <Pie
+                    data={statusVeiculos}
+                    cx="50%" cy="50%"
+                    innerRadius={50} outerRadius={80}
+                    paddingAngle={3}
+                    dataKey="value"
+                    
+                  >
                     {statusVeiculos.map((entry, i) => <Cell key={i} fill={entry.cor} />)}
                   </Pie>
                   <Tooltip
@@ -155,7 +180,6 @@ export default function Dashboard({ usuario }) {
           )}
         </div>
 
-        {/* Barras */}
         <div className={styles.graficoCard}>
           <h2 className={styles.graficoTitulo}>Gasto com abastecimento por mês</h2>
           {gastosPorMes.length === 0 ? (
@@ -177,15 +201,13 @@ export default function Dashboard({ usuario }) {
                   formatter={v => [`R$ ${v.toFixed(2)}`, 'Total']}
                   cursor={{ fill: '#ffffff08' }}
                 />
-                <Bar dataKey="total" fill="url(#barGradient)" radius={0} />
+                <Bar dataKey="total" fill="url(#barGradient)" radius={0}  />
               </BarChart>
             </ResponsiveContainer>
           )}
         </div>
-
       </div>
 
-      {/* Viagens em andamento */}
       <div className={styles.tabelaCard}>
         <h2 className={styles.graficoTitulo}>Viagens em andamento</h2>
         {viagensAndamento === 0 ? (
